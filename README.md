@@ -1,4 +1,4 @@
-#JavaFX Learning programs
+# JavaFX Learning programs
 
 ## 1. NeoCalculator - JavaFXLearn.java
 As it is the one of the most in-demand Java GUI frameworks, I decided to learn this framework by making a calculator.
