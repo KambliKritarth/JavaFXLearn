@@ -16,6 +16,7 @@ public class JavaFXLearn extends Application {
     double num1 = 0.0, num2 = 0.0;
     StringBuilder numStr = new StringBuilder();
     StringBuilder str = new StringBuilder();
+    
     @Override  
     public void start(Stage primaryStage) throws Exception {
 
