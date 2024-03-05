@@ -7,6 +7,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.awt.Component;
 import javax.swing.JOptionPane;
 
 import java.io.*;
@@ -15,17 +17,22 @@ import javax.swing.plaf.ToolBarUI;
 
 public class IDEAStry extends Application {
     private TextArea textArea;
+    private TextArea textArea2;
     private File currentFile;
+    private String storagePath = "D:/KritarthJavaInDepth/javafxCalci/EditorFiles";
+	    
+    private int noOfUntitleds = 0;
 
     @Override
     public void start(Stage primaryStage) {
         // Create TextArea for editing text
         textArea = new TextArea();
+	textArea2 = new TextArea();
 
         // Create MenuBar
         MenuBar menuBar = createMenuBar();
         ToolBar toolBar = createToolBar();
-        TabPane tabPane = createTabPane();
+        TabPane tabPane = createTabPane("Untitled.txt");
         // Create BorderPane layout
         BorderPane root = new BorderPane();
         GridPane gp = new GridPane();
@@ -34,6 +41,7 @@ public class IDEAStry extends Application {
         gp.add(toolBar, 0, 2);
         gp.add(tabPane, 0, 3);
         root.setTop(gp);
+	//event handle selecting a tab to switch textAreas
         root.setCenter(textArea);
 
         // Create Scene
@@ -48,16 +56,14 @@ public class IDEAStry extends Application {
 	//Declaring buttons for a toolbar
 	Button newBtn = new Button("Ctrl + N");
       	Button opnBtn = new Button("Ctrl + O");
+      	Button tabBtn = new Button("Ctrl + T");
       	
     	ToolBar toolBar = new ToolBar();
 	toolBar.getItems().addAll(newBtn, opnBtn);
 
 	return toolBar;
     }
-    private Tab createNewTab(String fileName){
-	return new Tab(fileName);
-    }
-    private TabPane createTabPane(String... args) {
+    private void createTabPane(String... args) {
 	//Declaring tabpane
 	TabPane tabPane = new TabPane();
 	Tab newTab; 	      	
@@ -68,7 +74,21 @@ public class IDEAStry extends Application {
 		newTab = new Tab(args[0]);
 	
 	tabPane.getTabs().add(newTab);
-
+	System.out.println(tabPane);
+	//return tabPane;
+    }
+    private TabPane createTabPane(String args) {
+	//Declaring tabpane
+	TabPane tabPane = new TabPane();
+	Tab newTab; 	      	
+	//Declaring new tab
+	if(args.length() == 0)
+		newTab = new Tab("*Untitled.txt");
+	else
+		newTab = new Tab(args);
+	
+	tabPane.getTabs().add(newTab);
+	System.out.println(tabPane);
 	return tabPane;
     }
     private MenuBar createMenuBar() {
@@ -80,7 +100,11 @@ public class IDEAStry extends Application {
         saveItem.setOnAction(event -> saveFile());
         MenuItem saveAsItem = new MenuItem("Save As...");
         saveItem.setOnAction(event -> saveFile());
-        fileMenu.getItems().addAll(openItem, saveItem, saveAsItem);
+        MenuItem newItem = new MenuItem("New File");
+	newItem.setOnAction(event -> newFile());
+        MenuItem newTab = new MenuItem("New Tab");
+	newTab.setOnAction(event -> createTabPane("Trial.txt"));
+        fileMenu.getItems().addAll(openItem, saveItem, saveAsItem, newItem, newTab);
 
         Menu editMenu = new Menu("Edit");
         MenuItem undoItem = new MenuItem("Undo");
@@ -113,19 +137,24 @@ public class IDEAStry extends Application {
         }
       }
     }
-    private void newFile(String... args, Component parentComponent) {
+    //private void newFile(String args, Component parentComponent) {
+    private void newFile(){
 	    	//To create a new tab
 		try{
-			File newFile = new File(args[0].concat(."txt"));
+			File newFile = new File(storagePath.concat(".txt"));			
 			JOptionPane jop;
-			if(newFile.createNewFile())
-				jop = new JOPtionPane("File is created!",INFORMATION_MESSAGE);
-			else
-				jop = new JOPtionPane("File already exists.",INFORMATION_MESSAGE);
-			jop.showMessageDialog();
+			if(newFile.createNewFile()){
+				//jop = new JOptionPane("File is created!",INFORMATION_MESSAGE);
+				System.out.println("File created!");
+			}
+			else{
+				//jop = new JOptionPane("File already exists.",INFORMATION_MESSAGE);
+				System.out.println("File already created!");
+			}
+			//jop.showMessageDialog();
 		}
 		catch(IOException e){
-			JOptionPane jop = new JOPtionPane("File cannot be created!",ERROR_MESSAGE);
+			System.out.println("File could not be created!");
 		}
     }
     private void undoText() {
